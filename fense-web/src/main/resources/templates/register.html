@@ -1,0 +1,55 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Fense | 用户注册</title>
+    <div th:include="include/header::header"/>
+    <link th:href="@{{path}/css/plugins/iCheck/custom.css(path=${contextPath})}" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen   animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name">Fense</h1>
+
+            </div>
+            <h3>注册数据仓库权限管理系统账号</h3>
+            <p>一站式解决数据仓库权限管理问题</p>
+            <p style="color: red" th:text="${msg}" />
+            <form class="m-t" role="form" action="/user/register">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="姓名" required="">
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" name="email" placeholder="Email" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="密码" required="">
+                </div>
+                <div class="form-group">
+                        <div class="checkbox i-checks"><label> <input type="checkbox"><i></i> Agree the terms and policy </label></div>
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">立即注册</button>
+
+                <p class="text-muted text-center"><small>Already have an account?</small></p>
+                <a class="btn btn-sm btn-white btn-block" th:href="@{{path}/login(path=${contextPath})}">Login</a>
+            </form>
+            <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>
+        </div>
+    </div>
+
+    <!-- iCheck -->
+    <script th:src="@{{path}/js/plugins/iCheck/icheck.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+    </script>
+</body>
+
+</html>

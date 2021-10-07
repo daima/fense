@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxy7.data.fense.server.dao.QueryLogDao">
+    <insert id="save" parameterType="com.cxy7.data.fense.server.model.QueryLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO query_log( <include refid="allColumn" /> )
+        VALUES (#{type}, #{eventDate}, #{eventTime}, #{queryStartTime}, #{queryDurationMs}, #{resultRows},
+        #{resultBytes}, #{query}, #{exception}, #{user}, #{queryId}, #{address}, #{port}, #{osUser},
+        #{clientHostname}, #{clientName}, #{clientVersion}, #{httpMethod}, #{httpUserAgent})
+    </insert>
+
+    <resultMap id="allColumnRs" type="com.cxy7.data.fense.server.model.DataSource">
+        <id property="type" column="type" />
+        <id property="eventDate" column="event_date" />
+        <id property="eventTime" column="event_time" />
+        <id property="queryStartTime" column="query_start_time" />
+        <id property="queryDurationMs" column="query_duration_ms" />
+        <id property="resultRows" column="result_rows" />
+        <id property="resultBytes" column="result_bytes" />
+        <id property="query" column="query" />
+        <id property="exception" column="exception" />
+        <id property="user" column="user" />
+        <id property="queryId" column="query_id" />
+        <id property="address" column="address" />
+        <id property="port" column="port" />
+        <id property="osUser" column="os_user" />
+        <id property="clientHostname" column="client_hostname" />
+        <id property="clientName" column="client_name" />
+        <id property="clientVersion" column="client_version" />
+        <id property="httpMethod" column="http_method" />
+        <id property="httpUserAgent" column="http_user_agent" />
+    </resultMap>
+
+    <sql id="allColumn">
+        type,
+        event_date,
+        event_time,
+        query_start_time,
+        query_duration_ms,
+        result_rows,
+        result_bytes,
+        query,
+        exception,
+        user,
+        query_id,
+        address,
+        port,
+        os_user,
+        client_hostname,
+        client_name,
+        client_version,
+        http_method,
+        http_user_agent
+    </sql>
+</mapper>

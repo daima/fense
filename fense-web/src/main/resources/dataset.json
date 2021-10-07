@@ -1,0 +1,26 @@
+[
+  {
+    "children": [
+      {
+        "id": 1,
+        "children": [
+          {
+            "text": "alliance",
+            "id": 309,
+            "icon": "fa fa-table"
+          },
+          {
+            "id": 310,
+            "text": "cola",
+            "icon": "fa fa-table"
+          }
+        ],
+        "icon": "fa fa-database",
+        "text": "alliance"
+      }
+    ],
+    "id": 1,
+    "text": "localhost",
+    "icon": "fa fa-cubes"
+  }
+]

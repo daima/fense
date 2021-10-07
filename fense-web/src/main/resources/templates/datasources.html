@@ -1,0 +1,148 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Fense | 数据源管理</title>
+    <div th:include="include/header::header"/>
+    <link th:href="@{{path}/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css(path=${contextPath})}" rel="stylesheet">
+    <link th:href="@{{path}/css/plugins/jqGrid/ui.jqgrid.css(path=${contextPath})}" rel="stylesheet">
+
+    <style>
+        /* Additional style to fix warning dialog position */
+        #alertmod_table_list_2 {
+            top: 900px !important;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+
+    <div th:include="include/nav::nav"/>
+    <div id="page-wrapper" class="gray-bg">
+        <div th:include="include/left_nav::left_nav"/>
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>数据源管理</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="index.html">主页</a>
+                    </li>
+                    <li>
+                        <a>数据源管理</a>
+                    </li>
+                    <li class="active">
+                        <strong>数据源列表</strong>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>所有数据源</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="jqGrid_wrapper">
+                                <table id="table_list_2"></table>
+                                <div id="pager_list_2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:include="include/footer::footer_state"/>
+    </div>
+</div>
+<div th:include="include/footer::footer"/>
+
+<!-- jqGrid -->
+<script th:src="@{{path}/js/plugins/jqGrid/i18n/grid.locale-en.js(path=${contextPath})}" type="text/javascript"></script>
+<script th:src="@{{path}/js/plugins/jqGrid/jquery.jqGrid.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function () {
+        // Configuration for jqGrid Example 2
+        $("#table_list_2").jqGrid({
+            url: "/datasource/list",
+            datatype: "json",
+            height: 450,
+            autowidth: true,
+            shrinkToFit: true,
+            rowNum: 20,
+            rowList: [10, 20, 30],
+            colModel:[
+                {name:'id',label:'id', width:20},
+                {name:'name', editable: true,label:'名称', width:80},
+                {name:'jdbcURL', editable: true, label:'jdbcURL', width:210},
+                {name:'user', editable: true, label:'用户名', width:50},
+                {name:'pass', editable: true, label:'密码', edittype:'password', width:50},
+                {name:'update_time',label:'更新时间', width:110},
+                {name:'test_url',label:'测试', width:50},
+                {name:'parse_url',label:'解析', width:60}
+            ],
+            ondblClickRow: function(id){
+                jQuery(this).editRow(id, true);
+            },
+            pager: "#pager_list_2",
+            viewrecords: true,
+            caption: "数据源列表",
+            editurl : '/datasource/edit',
+            hidegrid: false
+        });
+
+        // Add selection
+        $("#table_list_2").setSelection(4, true);
+
+        // Setup buttons
+        $("#table_list_2").jqGrid('navGrid', '#pager_list_2',
+            // the buttons to appear on the toolbar of the grid
+            { edit: true, add: true, del: true, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            // options for the Edit Dialog
+            {
+                height: 'auto',
+                width: 620,
+                editCaption: "编辑",
+                recreateForm: true,
+                closeAfterEdit: true,
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Add Dialog
+            {
+                addCaption : "新增",
+                height: 'auto',
+                width: 620,
+                closeAfterAdd: true,
+                recreateForm: true,
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Delete Dailog
+            {
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            }
+        );
+
+        // Add responsive to jqGrid
+        $(window).bind('resize', function () {
+            var width = $('.jqGrid_wrapper').width();
+            $('#table_list_2').setGridWidth(width);
+        });
+
+        setTimeout(function(){
+            $('.wrapper-content').removeClass('animated fadeInRight');
+        },700);
+
+    });
+
+</script>
+</body>
+</html>

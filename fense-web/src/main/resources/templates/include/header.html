@@ -1,0 +1,25 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+//getScheme()获取协议，getServerName()获取服务器名，getServerPort()服务器端口，getContextPath() APP根路径
+<a th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/'} "
+   id="contextPath"></a>
+<script>
+    $(function () {
+        var contextPath = $('#contextPath').attr('href');//获取应用的根目录
+    });
+</script>
+<div th:fragment="header">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link th:href="@{{path}/css/bootstrap.min.css(path=${contextPath})}" rel="stylesheet" />
+	<link th:href="@{{path}/font-awesome/css/font-awesome.css(path=${contextPath})}" rel="stylesheet" />
+	<link th:href="@{{path}/css/plugins/blueimp/css/blueimp-gallery.min.css(path=${contextPath})}"
+		rel="stylesheet">
+
+	<link th:href="@{{path}/css/animate.css(path=${contextPath})}" rel="stylesheet" />
+	<link th:href="@{{path}/css/style.css(path=${contextPath})}" rel="stylesheet" />
+	<link
+		th:href="@{{path}/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css(path=${contextPath})}"
+		rel="stylesheet" />
+</div>
+</html>

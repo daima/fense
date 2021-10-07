@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxy7.data.fense.dao.DatasetDao">
+    <insert id="save" parameterType="com.cxy7.data.fense.model.Dataset" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO dataset( <include refid="allColumnForInsert" /> )
+        VALUES (#{parent}, #{name}, #{datasourceId}, #{type}, #{owner})
+    </insert>
+
+    <update id="update" parameterType="com.cxy7.data.fense.model.Approval">
+        UPDATE dataset
+        SET parent=#{parent}, datasource_id=#{datasourceId}, type=#{type}, owner=#{owner}, update_time=NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM dataset where id = #{id}
+    </delete>
+
+    <select id="getOne" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from dataset where id = #{id}
+    </select>
+
+    <select id="findAllByTypeAndDatasource" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from dataset where type = #{type} AND datasource_id = #{datasource_id}
+    </select>
+
+    <select id="findAllByParent" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from dataset where parent = #{parent}
+    </select>
+
+    <select id="getOneByPrivilegeId" resultMap="allColumnRs">
+        SELECT d.* FROM privilege p JOIN dataset d on d.id = p.dataset_id WHERE p.id = #{privilegeId}
+    </select>
+
+    <resultMap id="allColumnRs" type="com.cxy7.data.fense.model.Dataset">
+        <id property="id" column="id"/>
+        <result property="parent" column="parent"/>
+        <result property="datasourceId" column="datasource_id"/>
+        <result property="type" column="type"/>
+        <result property="owner" column="owner"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="allColumn">
+        id,
+        parent,
+        name,
+        datasource_id,
+        type,
+        owner,
+        create_time,
+        update_time
+    </sql>
+
+    <sql id="allColumnForInsert">
+        parent,
+        name,
+        datasource_id,
+        type,
+        owner
+    </sql>
+</mapper>

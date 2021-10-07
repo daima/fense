@@ -1,0 +1,192 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Fense | 数据集管理</title>
+    <div th:include="include/header::header"/>
+    <link th:href="@{{path}/css/plugins/jsTree/style.min.css(path=${contextPath})}" rel="stylesheet">
+    <link th:href="@{{path}/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css(path=${contextPath})}" rel="stylesheet">
+</head>
+<body>
+
+<div id="wrapper">
+    <div th:include="include/nav::nav"/>
+<div id="page-wrapper" class="gray-bg">
+    <div th:include="include/left_nav::left_nav"/>
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>数据集管理</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/">主页</a>
+                </li>
+                <li>
+                    <a>数据集管理</a>
+                </li>
+                <li class="active">
+                    <strong>数据集管理</strong>
+                </li>
+            </ol>
+        </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>数据集</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    <div id="datasets"></div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>属性</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form id="dataset_form" class="form-horizontal">
+                        <div class="form-group"><label class="col-sm-2 control-label">ID</label>
+                            <div class="col-sm-10"><p class="form-control-static" id="id"></p></div>
+                        </div>
+                        <div class="form-group"><label class="col-sm-2 control-label">名称</label>
+                            <div class="col-sm-10"><p class="form-control-static" id="name"></p></div>
+                        </div>
+                        <div class="form-group"><label class="col-sm-2 control-label">类型</label>
+                            <div class="col-sm-10"><p class="form-control-static" id="type"></p></div>
+                        </div>
+                        <div class="form-group"><label class="col-sm-2 control-label">数据源名称</label>
+                            <div class="col-sm-10"><p class="form-control-static" id="datasource_name"></p></div>
+                        </div>
+                        <div class="form-group"><label class="col-lg-2 control-label">更新时间</label>
+                            <div class="col-lg-10"><p class="form-control-static" id="update_time"></p></div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group"><label class="col-lg-2 control-label">负责人</label>
+                            <div class="col-lg-10">
+                                <select class="form-control m-b" id="owner">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-white" type="cancel">取消</button>
+                                <button class="btn btn-primary" type="submit">修改负责人</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+    <div th:include="include/footer::footer_state"/>
+</div>
+</div>
+
+<div th:include="include/footer::footer"/>
+
+<script th:src="@{{path}/js/plugins/jsTree/jstree.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+<style>
+    .jstree-open > .jstree-anchor > .fa-folder:before {
+        content: "\f07c";
+    }
+
+    .jstree-default .jstree-icon.none {
+        width: 0;
+    }
+</style>
+
+<script>
+    $(document).ready(function(){
+        var contextPath = $('#contextPath').attr('href');//获取应用的根目录
+        $('#datasets').jstree({
+            'core' : {
+            'data' : {
+                "url" : '/dataset/list',
+                "dataType" : "json"
+            }
+        } });
+        $.get('/user/listForGrant', function (data, status) {
+            data = data.replace('<select>', '');
+            data = data.replace('</select>', '');
+            $('#owner').append(data);
+        })
+        $('#datasets').on("select_node.jstree", function (e, data) {
+            var dataset_id = data.instance.get_selected(true)[0].id;
+            // 选中数据集，查询该数据集的相关属性
+            $.ajax({
+                url: "/dataset/get?id=" + dataset_id,
+                type: "GET",
+                success: function (data, textStatus, jqXHR) {
+                    $('#id').text(data.id)
+                    $('#name').text(data.name)
+                    $('#type').text(data.type)
+                    $('#datasource_name').text(data.datasource_name)
+                    $('#update_time').text(data.update_time)
+                    // $("#owner option[text='" + data.owner + "']").attr("selected", true);
+                    $('#owner').val(data.owner)
+                },
+
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401 || jqXHR.status === 403) {
+                        alert(jqXHR.responseText)
+                    } else {
+                        throw new Error("an unexpected error occured: " + errorThrown);
+                    }
+                }
+            });
+        });
+        $("#dataset_form").submit(function (event) {
+            event.preventDefault();
+
+            var $form = $(this);
+            var dataset_id = $('#id').text()
+            if (dataset_id == '') {
+                alert('请先选定数据集')
+                return false;
+            }
+            var formData = {
+                id: dataset_id,
+                owner: $('#owner').val()
+            };
+
+            $.post('/dataset/updateOwner', formData, function (data, status) {
+                if (data) {
+                    alert('修改成功！')
+                }
+            })
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

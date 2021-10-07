@@ -1,0 +1,216 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Fense | 角色授予</title>
+    <div th:include="include/header::header"/>
+    <link th:href="@{{path}/css/plugins/jsTree/style.min.css(path=${contextPath})}" rel="stylesheet">
+    <link th:href="@{{path}/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css(path=${contextPath})}" rel="stylesheet">
+    <link th:href="@{{path}/css/plugins/jqGrid/ui.jqgrid.css(path=${contextPath})}" rel="stylesheet">
+</head>
+<body>
+
+<div id="wrapper">
+    <div th:include="include/nav::nav"/>
+    <div id="page-wrapper" class="gray-bg">
+        <div th:include="include/left_nav::left_nav"/>
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>角色授予</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="/">主页</a>
+                    </li>
+                    <li>
+                        <a>角色管理</a>
+                    </li>
+                    <li class="active">
+                        <strong>角色授予</strong>
+                    </li>
+                </ol>
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>角色</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div id="roles"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>授予的用户</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="jqGrid_wrapper">
+                                <table id="table_roles"></table>
+                                <div id="pager_roles"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div th:include="include/footer::footer_state"/>
+    </div>
+</div>
+<div th:include="include/footer::footer"/>
+
+<script th:src="@{{path}/js/plugins/jsTree/jstree.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+<!-- jqGrid -->
+<script th:src="@{{path}/js/plugins/jqGrid/i18n/grid.locale-en.js(path=${contextPath})}" type="text/javascript"></script>
+<script th:src="@{{path}/js/plugins/jqGrid/jquery.jqGrid.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+<style>
+    .jstree-open > .jstree-anchor > .fa-folder:before {
+        content: "\f07c";
+    }
+
+    .jstree-default .jstree-icon.none {
+        width: 0;
+    }
+</style>
+
+<script>
+    $(document).ready(function(){
+        var contextPath = $('#contextPath').attr('href');//获取应用的根目录
+        $('#roles').jstree({
+            'core' : {
+                'data' : {
+                    "url" : '/roleGrant/list',
+                    "dataType" : "json"
+                }
+            } });
+        $('#roles').on("select_node.jstree", function (e, data) {
+            var role_id = data.instance.get_selected(true)[0].id;
+            // 选中数据集，查询所有有授权的角色
+            $("#table_roles").jqGrid('setGridParam', {url: "/roleGrant/auth?id=" + role_id}).trigger("reloadGrid");
+        });
+        // Configuration for jqGrid Example 2
+        $("#table_roles").jqGrid({
+            url: "/roleGrant/auth?id=" + 1,
+            datatype: "json",
+            height: 450,
+            autowidth: true,
+            shrinkToFit: true,
+            rowNum: 20,
+            rowList: [10, 20, 30],
+            colModel:[
+                {name:'id',label:'id', width:30},
+                {name:'name',label:'用户', editable: true, edittype: "select",
+                    editoptions:{dataUrl: '/user/listForGrant'}, width:100},
+                {name:'create_time',label:'授予时间', width:80}
+            ],
+            pager: "#pager_roles",
+            viewrecords: true,
+            caption: "用户列表",
+            edit : true,
+            editurl : '/roleGrant/grant',
+            hidegrid: false
+        });
+
+
+        // Add selection
+        $("#table_roles").setSelection(4, true);
+
+        // Setup buttons
+        $("#table_roles").jqGrid('navGrid', '#pager_roles',
+            // the buttons to appear on the toolbar of the grid
+            { edit: true, add: true, del: true, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            // options for the Edit Dialog
+            {
+                height: 'auto',
+                width: 620,
+                editCaption: "编辑",
+                recreateForm: true,
+                closeAfterEdit: true,
+                editData: {
+                    role_id: function () {
+                        var url = $("#table_roles").jqGrid('getGridParam', 'url');
+                        var role_id = url.substring(url.indexOf("id=") + 3)
+                        return role_id;
+                    }
+                },
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Add Dialog
+            {
+                addCaption : "新增",
+                height: 'auto',
+                width: 620,
+                closeAfterAdd: true,
+                recreateForm: true,
+                editData: {
+                    role_id: function () {
+                        var url = $("#table_roles").jqGrid('getGridParam', 'url');
+                        var role_id = url.substring(url.indexOf("id=") + 3)
+                        return role_id;
+                    }
+                },
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Delete Dailog
+            {
+                editData: {
+                    role_id: function () {
+                        var rowId = $("#table_roles").jqGrid('getGridParam', 'selrow');
+                        var rowData = $("#table_roles").jqGrid('getRowData', rowId);
+                        var role_id = rowData.role_id
+                        return role_id;
+                    }
+                },
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            }
+        );
+
+        // Add responsive to jqGrid
+        $(window).bind('resize', function () {
+            var width = $('.jqGrid_wrapper').width();
+            $('#table_roles').setGridWidth(width);
+        });
+
+        setTimeout(function(){
+            $('.wrapper-content').removeClass('animated fadeInRight');
+        },700);
+    });
+</script>
+
+
+</body>
+
+</html>

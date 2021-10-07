@@ -1,0 +1,57 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<div th:fragment="nav">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" th:src="@{{path}/img/profile_small.jpg(path=${contextPath})}" />
+                             </span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold" sec:authentication="principal.username"></strong>
+                             </span>
+                                <span class="text-muted text-xs block" sec:authorize="hasRole('ROLE_ADMIN')">管理员<b class="caret"></b></span>
+                            <span class="text-muted text-xs block" sec:authorize="hasRole('ROLE_USER')">用户<b class="caret"></b></span></span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li th:each="authority : ${#authentication.getAuthorities()}">
+                                <a href="/" th:text="${authority.getAuthority().replaceFirst('ROLE_', '')}"></a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a th:href="@{{path}/user/logout(path=${contextPath})}">Logout</a></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                        IN+
+                    </div>
+                </li>
+                <li>
+                    <a th:href="@{{path}/datasources(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">数据源</span><span class="fa arrow"></span></a>
+                </li>
+                <li>
+                    <a th:href="@{{path}/datasets(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">数据集</span><span class="fa arrow"></span></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{{path}/users(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">用户管理</span><span class="fa arrow"></span></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{{path}/roles(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">角色管理</span><span class="fa arrow"></span></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{{path}/role_grant(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">角色授予</span><span class="fa arrow"></span></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{{path}/privileges(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">管理员授权</span><span class="fa arrow"></span></a>
+                </li>
+                <li>
+                    <a th:href="@{{path}/apply(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">申请权限</span><span class="fa arrow"></span></a>
+                </li>
+                <li>
+                    <a th:href="@{{path}/applies(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">我的申请</span><span class="fa arrow"></span></a>
+                </li>
+                <li>
+                    <a th:href="@{{path}/approvals(path=${contextPath})}"><i class="fa fa-th-large"></i> <span class="nav-label">我的审批</span><span class="fa arrow"></span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

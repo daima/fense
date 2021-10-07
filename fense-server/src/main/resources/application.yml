@@ -1,0 +1,68 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /
+  jetty:
+    threads.acceptors: -1
+    accesslog.append: false
+    accesslog.custom-format: dd/MMM/yyyy:HH:mm:ss Z # Timestamp format of the request log.
+    accesslog.enabled: false
+    accesslog.format: ncsa
+    accesslog.file-date-format:  # Date format to place in a log filename.
+    accesslog.filename:  # Log filename. If not specified, logs redirect to "System.err".
+    accesslog.retention-period: 31
+    max-http-form-post-size: 200000B
+    threads.selectors: -1
+
+spring:
+  application.name: fense-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/fense?serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&useAffectedRows=true&nullCatalogMeansCurrent=true&socketTimeout=30000&connectTimeout=10000
+    username: root
+    password: root
+  main.allow-bean-definition-overriding: true
+  ldap:
+    userDN: cn=xiaoyu
+    urls: ldap://ldap.cxy7.com:389
+    base: dc=cxy7,dc=com
+    username: admin
+    password: admin
+    connect:
+      timeout: 3000
+    read:
+      timeout: 3000
+mybatis-plus:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.cxy7.data.fense.server.model
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    root: info
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%t]){faint} %clr(%-40.40logger{39}){cyan}[%line]%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39}[lineno:%line]: %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+jdbc:
+  fetch_size: 1000
+  execute:
+    timeout: 60
+executor:
+  shutdown:
+    timeout:
+      default: 60
+      hive: 300
+  corePoolSize:
+    default: 100
+  maxPoolSize:
+    default: 200
+  queueCapacity:
+    default: 100
+encrypt:
+  key:
+    iforgot:
+      email: 7OLDg28j$d7o#I1xjf4gu8tjm!4pqATr
+    datasource:
+      password: pNw4KMVlqfQXJ78!*6G@1E4*b6Bt!GJR
+    user:
+      password: g%n42w$$FDhB9Uf%M4jORrhWmLWbZ@8q

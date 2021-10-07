@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxy7.data.fense.server.dao.PrivilegeDao">
+    <insert id="save" parameterType="com.cxy7.data.fense.server.model.Privilege" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO privilege( <include refid="allColumnForInsert" /> )
+        VALUES (#{name}, #{datasetId}, #{mode}, #{createUser})
+    </insert>
+
+    <update id="update" parameterType="com.cxy7.data.fense.server.model.Privilege">
+        UPDATE privilege
+        SET name=#{name}, dataset_id=#{datasetId}, mode=#{mode}, create_user=#{createUser}, update_time=NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM privilege where id = #{id}
+    </delete>
+
+    <select id="getOne" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from privilege where id = #{id}
+    </select>
+
+    <select id="findByDatasetId" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from privilege where dataset_id = #{datasetId}
+    </select>
+
+    <select id="check" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM user
+            LEFT JOIN role_grant rg
+            ON user.id = rg.user_id
+                AND user_id = #{userId}
+            LEFT JOIN privilege_grant pg ON rg.role_id = pg.role_id
+            JOIN privilege p
+            ON p.id = pg.privilege_id
+                AND mode IN ('ALL', 'SELECT')
+        WHERE p.dataset_id IN (
+            SELECT tbl.id
+            FROM dataset db
+                JOIN dataset tbl
+                ON db.id = tbl.parent
+                    AND db.type = 1
+                    AND db.datasource_id = #{dsId}
+                    AND tbl.type = 2
+            WHERE db.name = #{databaseName}
+                AND tbl.name = #{tableName}
+        )
+    </select>
+
+    <insert id="grant">
+        INSERT INTO privilege_grant(privilege_id, role_id) VALUES (#{privilegeId}, #{roleId})
+    </insert>
+
+    <delete id="revoke">
+        DELETE FROM privilege_grant WHERE privilege_id = #{privilegeId} AND role_id = #{roleId}
+    </delete>
+
+    <resultMap id="allColumnRs" type="com.cxy7.data.fense.server.model.Privilege">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="datasetId" column="dataset_id"/>
+        <result property="mode" column="mode"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="allColumn">
+        id,
+        name,
+        dataset_id,
+        mode,
+        create_user,
+        create_time,
+        update_time
+    </sql>
+
+    <sql id="allColumnForInsert">
+        name,
+        dataset_id,
+        mode,
+        create_user
+    </sql>
+</mapper>

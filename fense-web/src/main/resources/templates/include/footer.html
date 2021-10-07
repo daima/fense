@@ -1,0 +1,37 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+//getScheme()获取协议，getServerName()获取服务器名，getServerPort()服务器端口，getContextPath() APP根路径
+<a th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/'} "
+   id="contextPath"></a>
+<script>
+    $(function () {
+        var contextPath = $('#contextPath').attr('href');//获取应用的根目录
+    });
+</script>
+<div th:fragment="footer">
+    <!-- Mainly scripts -->
+    <script th:src="@{{path}/js/jquery-3.1.1.min.js(path=${contextPath})}" type="text/javascript"></script>
+    <script th:src="@{{path}/js/bootstrap.min.js(path=${contextPath})}" type="text/javascript"></script>
+    <script th:src="@{{path}/js/plugins/metisMenu/jquery.metisMenu.js(path=${contextPath})}" type="text/javascript"></script>
+    <script th:src="@{{path}/js/plugins/slimscroll/jquery.slimscroll.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+    <!-- Peity -->
+    <script th:src="@{{path}/js/plugins/peity/jquery.peity.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script th:src="@{{path}/js/inspinia.js(path=${contextPath})}" type="text/javascript"></script>
+    <script th:src="@{{path}/js/plugins/pace/pace.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+    <script th:src="@{{path}/js/plugins/jquery-ui/jquery-ui.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+</div>
+<div th:fragment="footer_state">
+    <div class="footer">
+        <div class="pull-right">
+            1GB of <strong>250GB</strong> Free.
+        </div>
+        <div>
+            <strong>Copyright</strong> Example Company &copy; 2014-2017
+        </div>
+    </div>
+</div>
+</html>

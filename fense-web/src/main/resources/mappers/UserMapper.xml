@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxy7.data.fense.dao.UserDao">
+    <insert id="save" parameterType="com.cxy7.data.fense.model.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user( <include refid="allColumnForInsert" /> )
+        VALUES (#{name}, #{email}, #{password}, #{isAdmin})
+    </insert>
+
+    <update id="update" parameterType="com.cxy7.data.fense.model.User">
+        UPDATE user
+        SET name=#{name}, email=#{email}, password=#{password}, is_admin=#{isAdmin}, update_time=NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM user where id = #{id}
+    </delete>
+
+    <select id="count" resultType="int">
+        select count(1) from user
+    </select>
+
+    <select id="getOne" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from user where id = #{id}
+    </select>
+
+    <select id="findByNameAndPassword" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from user where name = #{name} and password = #{password}
+    </select>
+
+    <select id="findrByEmailAndPassword" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from user where email = #{email} and password = #{password}
+    </select>
+
+    <select id="getOneByName" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from user where name = #{name}
+    </select>
+
+    <select id="getOneByEmail" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from user where email = #{email}
+    </select>
+
+    <select id="findByRoleId" resultMap="allColumnRs">
+        SELECT u.* FROM role_grant rg JOIN user u on rg.user_id = u.id WHERE rg.role_id = #{roleId}
+    </select>
+
+    <select id="findAll" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from user
+    </select>
+    
+    <resultMap id="allColumnRs" type="com.cxy7.data.fense.model.User">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="isAdmin" column="is_admin"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="allColumn">
+        id,
+        name,
+        email,
+        password,
+        is_admin,
+        last_login_time,
+        create_time,
+        update_time
+    </sql>
+
+    <sql id="allColumnForInsert">
+        name,
+        email,
+        password,
+        is_admin
+    </sql>
+</mapper>

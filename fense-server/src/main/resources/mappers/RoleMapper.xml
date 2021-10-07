@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxy7.data.fense.server.dao.RoleDao">
+    <insert id="save" parameterType="com.cxy7.data.fense.server.model.Role" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO role(name) VALUES (#{name})
+    </insert>
+
+    <update id="update" parameterType="com.cxy7.data.fense.server.model.Role">
+        UPDATE role
+        SET name=#{name}, update_time=NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM role where id = #{id}
+    </delete>
+
+    <select id="getOne" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from role where id = #{id}
+    </select>
+
+    <select id="findByName" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from role where name = #{name}
+    </select>
+
+    <select id="findAll" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from role
+    </select>
+
+    <select id="findByUserId" resultMap="allColumnRs">
+        SELECT r.* FROM role_grant rg JOIN role r on rg.role_id = r.id WHERE rg.user_id = #{userId}
+    </select>
+
+    <select id="findByPrivilegeId" resultMap="allColumnRs">
+        SELECT r.* FROM privilege_grant pg JOIN role r on r.id = pg.role_id WHERE privilege_id = #{privilegeId}
+    </select>
+
+    <select id="count" resultType="int">
+        select count(1) from role
+    </select>
+
+    <insert id="grant" useGeneratedKeys="true">
+        INSERT INTO role_grant(user_id, role_id) VALUES (#{userId}, #{roleId})
+    </insert>
+
+    <delete id="revoke">
+        DELETE FROM role_grant WHERE user_id = #{userId} AND role_id = #{roleId}
+    </delete>
+
+    <resultMap id="allColumnRs" type="com.cxy7.data.fense.server.model.Role">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="allColumn">
+        id,
+        name,
+        create_time,
+        update_time
+    </sql>
+</mapper>

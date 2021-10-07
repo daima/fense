@@ -1,0 +1,161 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Fense | 我的审批</title>
+    <div th:include="include/header::header"/>
+    <link th:href="@{{path}/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css(path=${contextPath})}" rel="stylesheet">
+    <link th:href="@{{path}/css/plugins/jqGrid/ui.jqgrid.css(path=${contextPath})}" rel="stylesheet">
+
+    <style>
+        /* Additional style to fix warning dialog position */
+        #alertmod_table_list_2 {
+            top: 900px !important;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+
+    <div th:include="include/nav::nav"/>
+    <div id="page-wrapper" class="gray-bg">
+        <div th:include="include/left_nav::left_nav"/>
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>我的审批</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="/">主页</a>
+                    </li>
+                    <li>
+                        <a>权限管理</a>
+                    </li>
+                    <li class="active">
+                        <strong>我的审批</strong>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>所有审批单</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="jqGrid_wrapper">
+                                <table id="table_list_2"></table>
+                                <div id="pager_list_2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:include="include/footer::footer_state"/>
+    </div>
+</div>
+<div th:include="include/footer::footer"/>
+
+<!-- jqGrid -->
+<script th:src="@{{path}/js/plugins/jqGrid/i18n/grid.locale-en.js(path=${contextPath})}" type="text/javascript"></script>
+<script th:src="@{{path}/js/plugins/jqGrid/jquery.jqGrid.min.js(path=${contextPath})}" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function () {
+        // Configuration for jqGrid Example 2
+        $("#table_list_2").jqGrid({
+            url: "/approval/list",
+            datatype: "json",
+            height: 450,
+            autowidth: true,
+            shrinkToFit: true,
+            rowNum: 20,
+            rowList: [10, 20, 30],
+            colModel:[
+                {name:'id',label:'id', editable: true, width:20},
+                {name:'applyid',label:'申请编号', width:30},
+                {name:'applicant',label:'申请者', width:50},
+                {name:'reason',label:'申请理由', width:100},
+                {name:'status',label:'状态', width:40},
+                {name:'opinion',label:'审批意见', editable: true, width:100},
+                {name:'update_time',label:'申请时间', width:110},
+                {name:'role',label:'授予角色', editable: true, edittype: "select", width:50},
+                {name:'new_role',label:'新建角色', editable: true, width:50}
+            ],
+            pager: "#pager_list_2",
+            viewrecords: true,
+            caption: "所有审批单",
+            add: true,
+            addtext: '新增',
+            edit : true,
+            editurl : '/approval/edit',
+            edittext: '编辑',
+            hidegrid: false
+        });
+
+        // Add selection
+        $("#table_list_2").setSelection(4, true);
+
+        // Setup buttons
+        $("#table_list_2").jqGrid('navGrid', '#pager_list_2',
+            // the buttons to appear on the toolbar of the grid
+            { edit: true, add: true, del: true, search: false, refresh: false, view: false, position: "left", cloneToTop: false },
+            // options for the Edit Dialog
+            {
+                height: 'auto',
+                width: 620,
+                editCaption: "编辑",
+                recreateForm: true,
+                beforeShowForm: function(form) {
+                    $.get('/role/listByUserId?id=' + $('#id').val(), function (data, status) {
+                        $('#tr_role').find('select').append(data)
+                    })
+                },
+                editData: {
+                    role: function () {
+                        var role_id = $('#tr_role').find('select').val()
+                        return role_id;
+                    }
+                },
+                closeAfterEdit: true,
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Add Dialog
+            {
+                addCaption : "新增",
+                height: 'auto',
+                width: 620,
+                closeAfterAdd: true,
+                recreateForm: true,
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Delete Dailog
+            {
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            }
+        );
+
+        // Add responsive to jqGrid
+        $(window).bind('resize', function () {
+            var width = $('.jqGrid_wrapper').width();
+            $('#table_list_2').setGridWidth(width);
+        });
+
+        setTimeout(function(){
+            $('.wrapper-content').removeClass('animated fadeInRight');
+        },700);
+
+    });
+
+</script>
+</body>
+</html>

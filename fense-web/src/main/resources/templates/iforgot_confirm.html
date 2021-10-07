@@ -1,0 +1,39 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Fense | 密码重置</title>
+    <div th:include="include/header::header"/>
+
+</head>
+
+<body class="gray-bg">
+
+    <div class="passwordBox animated fadeInDown">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="ibox-content">
+
+                    <h2 class="font-bold">密码重置</h2>
+
+                    <p>
+                        密码重置链接已经发送至您的邮箱: <span th:text="${email}"/><br/>
+                        请登录邮箱查看
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-6">
+                Copyright Example Company
+            </div>
+            <div class="col-md-6 text-right">
+               <small>© 2014-2015</small>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

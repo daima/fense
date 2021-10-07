@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxy7.data.fense.server.dao.ApplyDao">
+    <insert id="save" parameterType="com.cxy7.data.fense.server.model.Apply" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO apply( <include refid="allColumnForInsert" /> )
+        VALUES (#{applicant}, #{roleId}, #{privilegeId}, #{reason}, #{status})
+    </insert>
+
+    <update id="update" parameterType="com.cxy7.data.fense.server.model.Apply">
+        UPDATE apply
+        SET applicant=#{applicant}, role_id=#{roleId}, privilege_id=#{privilegeId}, reason=#{reason}, status=#{status}, update_time=NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM apply WHERE id = #{id}
+    </delete>
+
+    <select id="getOne" resultMap="allColumnRs">
+        select <include refid="allColumn" /> from apply where id = #{id}
+    </select>
+    
+    <select id="countByApplicant" resultType="int">
+        SELECT count(1) FROM apply WHERE applicant = #{applicant}
+    </select>
+
+    <select id="findByApplicant" resultMap="allColumnRs">
+        select apply.*, applicantUser.*, role.*,
+         privilege.*, approvals.*
+         from apply apply JOIN user applicantUser on apply.applicant = applicantUser.id
+        LEFT JOIN role role on role.id = apply.role_id
+        JOIN privilege privilege on apply.privilege_id = privilege.id
+        JOIN apply_history approvals on apply.id = approvals.apply_id
+        WHERE applicant = #{applicant}
+    </select>
+
+    <resultMap id="allColumnRs" type="com.cxy7.data.fense.server.model.Apply">
+        <id property="id" column="id"/>
+        <result property="applicant" column="applicant"/>
+        <result property="roleId" column="role_id"/>
+        <result property="privilegeId" column="privilege_id"/>
+        <result property="reason" column="reason"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="applicantUser" javaType="com.cxy7.data.fense.server.model.User">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="email" column="email"/>
+            <result property="password" column="password"/>
+            <result property="isAdmin" column="is_admin"/>
+            <result property="lastLoginTime" column="last_login_time"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
+        </association>
+        <association property="role" javaType="com.cxy7.data.fense.server.model.Role">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
+        </association>
+        <association property="privilege" javaType="com.cxy7.data.fense.server.model.Privilege">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="datasetId" column="dataset_id"/>
+            <result property="mode" column="mode"/>
+            <result property="createUser" column="create_user"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
+        </association>
+        <collection property="approvals" ofType="com.cxy7.data.fense.server.model.Approval">
+            <id property="id" column="id"/>
+            <result property="applyId" column="apply_id"/>
+            <result property="approver" column="approver"/>
+            <result property="status" column="status"/>
+            <result property="opinion" column="opinion"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
+        </collection>
+    </resultMap>
+
+    <sql id="allColumn">
+        id,
+        applicant,
+        role_id,
+        privilege_id,
+        reason,
+        status,
+        create_time,
+        update_time
+    </sql>
+
+    <sql id="allColumnForInsert">
+        applicant,
+        role_id,
+        privilege_id,
+        reason,
+        status
+    </sql>
+</mapper>

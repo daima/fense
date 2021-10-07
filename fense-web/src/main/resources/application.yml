@@ -1,0 +1,61 @@
+server:
+  host: localhost
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    context-path: /
+    session:
+      timeout: 30m
+  jetty:
+    threads.acceptors: -1
+    accesslog.append: false
+    accesslog.custom-format: dd/MMM/yyyy:HH:mm:ss Z # Timestamp format of the request log.
+    accesslog.enabled: false
+    accesslog.format: ncsa
+    accesslog.file-date-format:  # Date format to place in a log filename.
+    accesslog.filename:  # Log filename. If not specified, logs redirect to "System.err".
+    accesslog.retention-period: 31
+    max-http-form-post-size: 200000B
+    threads.selectors: -1
+
+spring:
+  application.name: fense-web
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/fense?serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&useAffectedRows=true&nullCatalogMeansCurrent=true&socketTimeout=30000&connectTimeout=10000
+    username: root
+    password: root
+    initialSize: 5
+    minIdle: 5
+    maxActive: 10
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,log4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  main.allow-bean-definition-overriding: true
+  jpa:
+    open-in-view: true
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+  thymeleaf:
+    mode: LEGACYHTML5
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.cxy7.data.fense.model
+logging:
+  level:
+    root:
+      info
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%t]){faint} %clr(%-40.40logger{39}){cyan}[%line]%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39}[lineno:%line]: %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"

@@ -1,0 +1,38 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Fense | 首页</title>
+    <div th:include="include/header::header"/>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div th:include="include/nav::nav"/>
+
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div th:include="include/left_nav::left_nav"/>
+        </div>
+        <div>
+            <span id="username"/>
+            <span id="isAnonymous"/>
+            <span id="isSomeAuth"/>
+            <span id="s"/>
+        </div>
+    </div>
+
+    <div th:include="include/footer::footer"/>
+</body>
+<script th:inline="javascript">
+    $(document).ready(function(){
+        var username = /*[[${name}]]*/ '';
+        var isAnonymous = [[${#authorization.expression('hasRole(''ROLE_ANONYMOUS'')')}]];
+        var isSomeAuth = [[${#authorization.expression('hasRole(''SOME_AUTH'')')}]];
+        var s = [[${#authorization.expression('hasRole(''ROLE_SOME_AUTH'')')}]];
+        $('#username').text(username);
+        $('#isAnonymous').text(isAnonymous);
+        $('#isSomeAuth').text(isSomeAuth);
+        $('#s').text(s);
+    })
+
+</script>
+</html>
