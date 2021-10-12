@@ -127,7 +127,7 @@ public class AesUtil {
         return result;
     }
     public static void main(String[] args) throws Exception {
-        String KEY = PropsUtil.getProperty("aes.key");
+        String KEY = PropsUtil.getProperty("encrypt.key.user.password");
         String content = "hello world!";
         System.out.println("加密前：" + content);
         System.out.println("加密密钥和解密密钥：" + KEY);

@@ -84,7 +84,7 @@ public class Driver extends UnregisteredDriver {
             final Serialization serializationType = getSerialization(config);
             switch (serializationType) {
                 case JSON:
-                    service = new RemoteService(httpClient);
+                    service = new JsonRpcService(httpClient);
                     break;
                 case PROTOBUF:
                     service = new RemoteProtobufService(httpClient, new ProtobufTranslationImpl());

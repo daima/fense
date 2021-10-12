@@ -30,7 +30,7 @@
         select <include refid="allColumn" /> from user where name = #{name} and password = #{password}
     </select>
 
-    <select id="findrByEmailAndPassword" resultMap="allColumnRs">
+    <select id="findByEmailAndPassword" resultMap="allColumnRs">
         select <include refid="allColumn" /> from user where email = #{email} and password = #{password}
     </select>
 

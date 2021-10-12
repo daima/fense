@@ -44,8 +44,13 @@ spring:
   main.allow-bean-definition-overriding: true
   jpa:
     open-in-view: true
-  resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+      cache:
+        period: 3600
+      chain:
+        cache: true
   thymeleaf:
     mode: LEGACYHTML5
 
