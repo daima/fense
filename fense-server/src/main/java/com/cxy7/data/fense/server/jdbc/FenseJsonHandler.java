@@ -127,7 +127,7 @@ public class FenseJsonHandler extends AbstractAvaticaHandler {
 
             response.setContentType("application/json;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
-            if (request.getMethod().equals("POST")) {
+            if (request.getMethod().equals("POST") && !uri.equals("/error")) {
                 // First look for a request in the header, then look in the body.
                 // The latter allows very large requests without hitting HTTP 413.
                 String rawRequest = request.getHeader("request");
