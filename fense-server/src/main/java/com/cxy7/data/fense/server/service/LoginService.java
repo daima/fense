@@ -72,17 +72,6 @@ public class LoginService extends AbstractLoginService {
         return userIdentity;
     }
 
-    private boolean authenricate(String username, String password) {
-        User user = userService.findByNameAndPassword(username, password);
-        if (user == null) {
-            return false;
-        }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("{} is authenticated", username);
-        }
-        return true;
-    }
-
     @Override
     protected String[] loadRoleInfo(UserPrincipal userPrincipal) {
         return new String[]{"users"};
